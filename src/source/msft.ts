@@ -1,11 +1,11 @@
 import cheerio from 'cheerio';
-import {range} from 'extlib/js/array/gen';
+import {blk} from 'extlib/js/array/gen';
 import {createDistinctFilter} from 'extlib/js/array/members';
 import {mapOptional} from 'extlib/js/optional/map';
 import moment from 'moment';
 import PQueue from 'p-queue';
 import {Job, Results} from '../model/msft';
-import {Cache, decodeEntities, fetch, QueryParams} from './_common';
+import {Cache, decodeEntities, fetch, getHtmlText, QueryParams} from './_common';
 
 const DDO_BEFORE = 'phApp.ddo = ';
 const DDO_AFTER = '; phApp.sessionParams';
@@ -36,7 +36,7 @@ export const fetchDescription = async (cache: Cache, id: string | number): Promi
     await cache.computeIfAbsent<Job>(`job${id}.json`, async () =>
       (await fetchDdo(`https://careers.microsoft.com/professionals/us/en/job/${id}/`))?.jobDetail?.data?.job,
     ),
-    job => cheerio(`<div>${[job.description, job.jobSummary, job.jobResponsibilities, job.jobQualifications].join('')}</div>`).text(),
+    job => getHtmlText(job.description, job.jobSummary, job.jobResponsibilities, job.jobQualifications),
   ) ?? '';
 
 export const fetchSubset = async (cache: Cache, from: number): Promise<Results> =>
@@ -56,17 +56,22 @@ export const fetchAll = async (cache: Cache) =>
     const pagination = first.hits;
     const total = first.totalHits;
 
-    console.info(`Need to retrieve ${total} jobs in chunks of ${pagination}`);
+    console.info(`[Microsoft] Need to retrieve ${total} jobs in chunks of ${pagination}`);
 
-    const results = await Promise.all(
-      range(Math.ceil(total / pagination)).map(i => queue.add(() => fetchSubset(cache, i * pagination))),
-    );
+    const results = await Promise.all(blk(
+      Math.ceil(total / pagination),
+      page => queue.add(() => fetchSubset(cache, page * pagination)),
+    ));
 
-    const jobs = results.flatMap(result => result.data.jobs).filter(createDistinctFilter(j => j.jobId));
+    const jobs = results
+      .flatMap(result => result.data.jobs)
+      .filter(createDistinctFilter(j => j.jobId));
 
     const fullDescriptions = await Promise.all(
       jobs.map(j => queue.add(() => fetchDescription(cache, j.jobId))),
     );
+
+    console.log('[Microsoft] Jobs successfully fetched');
 
     return jobs.map((j, i) => ({
       ...j,

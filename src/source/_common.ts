@@ -1,6 +1,6 @@
+import cheerio from "cheerio";
 import {wait} from 'extlib/js/async/timeout';
 import {promises as fs} from 'fs';
-import {readFile} from 'fs/promises';
 import {AllHtmlEntities} from 'html-entities';
 import mkdirp from 'mkdirp';
 import {join} from 'path';
@@ -59,6 +59,10 @@ const entities = new AllHtmlEntities();
 
 export const decodeEntities = (encoded: string): string => entities.decode(encoded);
 
+export const getHtmlText = (...segments: string[]): string => segments
+  .map(section => cheerio(`<div>${section}</div>`).text())
+  .join('\n\n');
+
 export class Cache {
   constructor (
     private readonly dir: string,
@@ -69,7 +73,7 @@ export class Cache {
     const path = join(this.dir, file);
     await mkdirp(this.dir);
     try {
-      return JSON.parse(await readFile(path, 'utf8'));
+      return JSON.parse(await fs.readFile(path, 'utf8'));
     } catch (e) {
       if (e.code != 'ENOENT') {
         throw e;

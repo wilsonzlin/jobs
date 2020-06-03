@@ -1,23 +1,29 @@
+import {join} from 'path';
 import {Cache} from './source/_common';
-import * as msft from './source/msft';
 import * as amzn from './source/amzn';
-import { join } from 'path';
+import * as goog from './source/goog';
+import * as msft from './source/msft';
 
-export const fetchAndParseAll = async ({
+const COMPANIES = {
+  'Amazon': amzn,
+  'Google': goog,
+  'Microsoft': msft,
+};
+
+export const fetchAndParse = async ({
   cacheDir,
+  companies,
 }: {
   cacheDir: string;
+  companies: ('Amazon' | 'Google' | 'Microsoft')[];
 }) => {
-  const [
-    Amazon,
-    Microsoft,
-  ] = await Promise.all([
-    amzn.fetchAll(new Cache(join(cacheDir, 'amzn'))).then(amzn.parseAll),
-    msft.fetchAll(new Cache(join(cacheDir, 'msft'))).then(msft.parseAll),
-  ]);
+  const res = {};
 
-  return {
-    Amazon,
-    Microsoft,
-  };
+  await Promise.all(companies.map(async (company) => {
+    const {fetchAll, parseAll} = COMPANIES[company];
+    const raw: any[] = await fetchAll(new Cache(join(cacheDir, company)));
+    res[company] = parseAll(raw);
+  }));
+
+  return res;
 };

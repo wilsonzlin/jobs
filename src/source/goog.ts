@@ -51,6 +51,6 @@ export const parseAll = (rawData: Job[]) =>
       title: j.job_title,
       date: moment.utc(j.publish_date).format('YYYY-M-D'),
       location: j.locations.join('; '),
-      preview: j.summary,
+      preview: getHtmlText(j.summary),
       description: getHtmlText(j.description),
     }));

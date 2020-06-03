@@ -1,7 +1,6 @@
 import cheerio from "cheerio";
 import {wait} from 'extlib/js/async/timeout';
 import {promises as fs} from 'fs';
-import {AllHtmlEntities} from 'html-entities';
 import mkdirp from 'mkdirp';
 import {join} from 'path';
 import request, {CoreOptions, RequiredUriUrl, Response} from 'request';
@@ -54,10 +53,6 @@ export const fetch = async ({
   }
   return undefined;
 };
-
-const entities = new AllHtmlEntities();
-
-export const decodeEntities = (encoded: string): string => entities.decode(encoded);
 
 export const getHtmlText = (...segments: string[]): string => segments
   .map(section => cheerio(`<div>${section}</div>`).text())

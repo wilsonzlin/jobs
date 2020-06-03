@@ -5,7 +5,7 @@ import {mapOptional} from 'extlib/js/optional/map';
 import moment from 'moment';
 import PQueue from 'p-queue';
 import {Job, Results} from '../model/msft';
-import {Cache, decodeEntities, fetch, getHtmlText, QueryParams} from './_common';
+import {Cache, fetch, getHtmlText, QueryParams} from './_common';
 
 const DDO_BEFORE = 'phApp.ddo = ';
 const DDO_AFTER = '; phApp.sessionParams';
@@ -88,6 +88,7 @@ export const parseAll = (rawData: any[]) =>
       title: j.title,
       date: moment.utc(j.postedDate).format('YYYY-M-D'),
       location: j.location,
-      preview: decodeEntities(j.descriptionTeaser),
-      description: decodeEntities(j.fullDescription),
+      preview: getHtmlText(j.descriptionTeaser),
+      // fullDescription is already extracted from HTML, so no need to call getHtmlText or decodeEntities.
+      description: j.fullDescription,
     }));

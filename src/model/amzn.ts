@@ -1,0 +1,25 @@
+export type Job = {
+  basic_qualifications: string;
+  business_category: string;
+  city: string;
+  company_name: string;
+  country_code: string;
+  description: string;
+  description_short: string;
+  id: string;
+  id_icims: string;
+  job_category: string;
+  job_family: string;
+  job_path: string;
+  job_schedule_type: string;
+  location: string;
+  normalized_location: string;
+  posted_date: string;
+  preferred_qualifications: string;
+  primary_search_label: string;
+  source_system: string;
+  state: string;
+  title: string;
+  updated_time: string;
+  url_next_step: string;
+};

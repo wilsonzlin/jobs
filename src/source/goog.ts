@@ -18,7 +18,6 @@ export const fetchSubset = async (cache: Cache, page: number): Promise<Results> 
     }))),
   );
 
-// Due to limitation with Amazon.jobs, it's not possible to fetch results past 10,000.
 export const fetchAll = async (cache: Cache) =>
   cache.computeIfAbsent('raw.json', async () => {
     const queue = new PQueue({concurrency: 8});
@@ -48,7 +47,7 @@ export const parseAll = (rawData: Job[]) =>
     .sort((a, b) => b.publish_date.localeCompare(a.publish_date))
     .map(j => ({
       id: j.job_id,
-      url: `https://careers.google.com/jobs/results/${/^jobs\/(\d+)$/.exec(j.job_id)![1]}`,
+      url: `https://careers.google.com/jobs/results/${assertExists(/^jobs\/(\d+)$/.exec(j.job_id))[1]}`,
       title: j.job_title,
       date: moment.utc(j.publish_date).format('YYYY-M-D'),
       location: j.locations.join('; '),

@@ -11,7 +11,9 @@ import {Cache, fetch, getHtmlText, QueryParams} from './_common';
 const DDO_BEFORE = 'phApp.ddo = ';
 const DDO_AFTER = '; phApp.sessionParams';
 
-export const fetchDdo = async <R extends {}> (uri: string, qs?: QueryParams): Promise<R | undefined> =>
+// Use `null` for missing data as `undefined` cannot be serialised into JSON.
+
+export const fetchDdo = async <R extends {}> (uri: string, qs?: QueryParams): Promise<R | null> =>
   mapOptional(await fetch({
     uri,
     qs,
@@ -28,26 +30,24 @@ export const fetchDdo = async <R extends {}> (uri: string, qs?: QueryParams): Pr
         return JSON.parse(js.slice(start + DDO_BEFORE.length, js.indexOf(DDO_AFTER, start)));
       }
     }
-    // If data isn't found in any <script>, return undefined.
-    return undefined;
-  });
+  }) ?? null;
 
 export const fetchDescription = async (cache: Cache, id: string | number): Promise<string> =>
   mapOptional(
-    await cache.computeIfAbsent<Job | undefined>(`job${id}.json`, async () =>
-      (await fetchDdo<JobDdo>(`https://careers.microsoft.com/professionals/us/en/job/${id}/`))?.jobDetail?.data?.job,
+    await cache.computeIfAbsent<Job | null>(`job${id}.json`, async () =>
+      (await fetchDdo<JobDdo>(`https://careers.microsoft.com/professionals/us/en/job/${id}/`))?.jobDetail?.data?.job ?? null,
     ),
     job => getHtmlText(job.description, job.jobSummary, job.jobResponsibilities, job.jobQualifications),
   ) ?? '';
 
 export const fetchSubset = async (cache: Cache, from: number): Promise<Results> =>
-  assertExists(await cache.computeIfAbsent<Results | undefined>(`results${from}.json`, async () =>
-    (await fetchDdo<ResultsDdo>(`https://careers.microsoft.com/us/en/search-results`, {
+  await cache.computeIfAbsent<Results>(`results${from}.json`, async () =>
+    assertExists(await fetchDdo<ResultsDdo>(`https://careers.microsoft.com/us/en/search-results`, {
       from,
       s: 1, // This is required, otherwise `from` is ignored.
       rt: 'professional', // Professional jobs.
-    }))?.eagerLoadRefineSearch,
-  ));
+    })).eagerLoadRefineSearch,
+  );
 
 export const fetchAll = async (cache: Cache) =>
   cache.computeIfAbsent('raw.json', async () => {

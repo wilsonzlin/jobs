@@ -71,14 +71,13 @@ export class Cache {
       return JSON.parse(await fs.readFile(path, 'utf8'));
     } catch (e) {
       if (e.code != 'ENOENT') {
-        throw e;
+        console.warn(`Failed to load data from cache: ${e.message}`);
       }
       const value = await computeFn();
-      // Make a best-effort cache write.
       try {
         await fs.writeFile(path, JSON.stringify(value));
       } catch (e) {
-        console.warn(e);
+        console.warn(`Failed to save data to cache: ${e.message}`);
       }
       return value;
     }

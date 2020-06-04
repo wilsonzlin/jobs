@@ -1,4 +1,4 @@
-import cheerio from "cheerio";
+import cheerio from 'cheerio';
 import {wait} from 'extlib/js/async/timeout';
 import {promises as fs} from 'fs';
 import mkdirp from 'mkdirp';
@@ -27,7 +27,7 @@ export const fetch = async ({
   jitter = 1000,
   maxRetries = 5,
   qs,
-  timeout= 30000,
+  timeout = 30000,
   uri,
 }: {
   headers?: { [name: string]: string };
@@ -36,7 +36,7 @@ export const fetch = async ({
   qs?: QueryParams;
   timeout?: number;
   uri: string;
-}) => {
+}): Promise<string | undefined> => {
   for (let retry = 0; retry <= maxRetries; retry++) {
     await wait(Math.floor(Math.random() * jitter));
     try {
@@ -74,7 +74,12 @@ export class Cache {
         throw e;
       }
       const value = await computeFn();
-      await fs.writeFile(path, JSON.stringify(value));
+      // Make a best-effort cache write.
+      try {
+        await fs.writeFile(path, JSON.stringify(value));
+      } catch (e) {
+        console.warn(e);
+      }
       return value;
     }
   }

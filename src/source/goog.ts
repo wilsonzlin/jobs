@@ -1,5 +1,6 @@
 import {blk} from 'extlib/js/array/gen';
 import {createDistinctFilter} from 'extlib/js/array/members';
+import {assertExists} from 'extlib/js/optional/assert';
 import moment from 'moment';
 import PQueue from 'p-queue';
 import {Job, Results} from '../model/goog';
@@ -7,14 +8,14 @@ import {Cache, fetch, getHtmlText} from './_common';
 
 export const fetchSubset = async (cache: Cache, page: number): Promise<Results> =>
   cache.computeIfAbsent<Results>(`results${page}.json`, async () =>
-    JSON.parse(await fetch({
+    JSON.parse(assertExists(await fetch({
       uri: 'https://careers.google.com/api/jobs/jobs-v1/search/',
       qs: {
         employment_type: 'FULL_TIME',
         page,
         sort_by: 'date',
       },
-    })),
+    }))),
   );
 
 // Due to limitation with Amazon.jobs, it's not possible to fetch results past 10,000.

@@ -1,10 +1,11 @@
+import {assertExists} from 'extlib/js/optional/assert';
 import moment from 'moment';
 import {Job} from '../model/amzn';
 import {Cache, fetch, getHtmlText} from './_common';
 
 export const fetchSubset = async (cache: Cache, offset: number, limit: number): Promise<Job[]> =>
   cache.computeIfAbsent<Job[]>(`results${offset}l${limit}.json`, async () =>
-    JSON.parse(await fetch({
+    JSON.parse(assertExists(await fetch({
       uri: 'https://amazon.jobs/en/search.json',
       qs: {
         offset,
@@ -13,7 +14,7 @@ export const fetchSubset = async (cache: Cache, offset: number, limit: number): 
       },
       // File can be huge, allow plenty of time.
       timeout: 20 * 60 * 1000,
-    })).jobs,
+    }))).jobs,
   );
 
 // Due to limitation with Amazon.jobs, it's not possible to fetch results past 10,000.

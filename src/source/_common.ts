@@ -55,8 +55,9 @@ export const fetch = async ({
 };
 
 export const getHtmlText = (...segments: string[]): string => segments
-  .map(section => cheerio(`<div>${section}</div>`).text())
-  .join('\n\n');
+  .map(html => cheerio(`<div>${html.replace(/<br\s*\/*\s*>/g, '\n')}</div>`).text().trim())
+  .join('\n\n')
+  .trim();
 
 export class Cache {
   constructor (

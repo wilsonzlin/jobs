@@ -85,3 +85,13 @@ export class Cache {
     }
   }
 }
+
+export type ParsedJob = {
+  id?: string;
+  url: string;
+  title: string;
+  date?: string;
+  location?: string;
+  preview?: string;
+  description?: string;
+};

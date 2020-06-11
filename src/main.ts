@@ -1,27 +1,23 @@
 import {join} from 'path';
-import {Cache} from './source/_common';
+import {Cache, ParsedJob} from './source/_common';
 import * as amzn from './source/amzn';
+import * as fb from './source/fb';
 import * as goog from './source/goog';
 import * as msft from './source/msft';
 
-export type Company = 'Amazon' | 'Google' | 'Microsoft';
+export {ParsedJob} from './source/_common';
 
-const COMPANIES = {
+export type Company = 'Amazon' | 'Facebook' | 'Google' | 'Microsoft';
+
+export const COMPANIES = {
   'Amazon': amzn,
+  'Facebook': fb,
   'Google': goog,
   'Microsoft': msft,
 };
 
 export type Result<C extends Company> = {
-  [company in C]: {
-    id: string,
-    url: string,
-    title: string,
-    date: string,
-    location: string,
-    preview: string,
-    description: string,
-  }[];
+  [company in C]: ParsedJob[];
 };
 
 export const fetchAndParse = async <C extends Company> ({

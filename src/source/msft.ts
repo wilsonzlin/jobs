@@ -6,7 +6,7 @@ import {mapOptional} from 'extlib/js/optional/map';
 import moment from 'moment';
 import PQueue from 'p-queue';
 import {Job, JobDdo, Results, ResultsDdo} from '../model/msft';
-import {Cache, fetch, formatJobDate, getHtmlText, QueryParams} from './_common';
+import {Cache, fetch, formatJobDate, getHtmlText, ParsedJob, QueryParams} from './_common';
 
 const DDO_BEFORE = 'phApp.ddo = ';
 const DDO_AFTER = '; phApp.sessionParams';
@@ -80,7 +80,7 @@ export const fetchAll = async (cache: Cache) =>
     }));
   });
 
-export const parseAll = (rawData: any[]) =>
+export const parseAll = (rawData: any[]): ParsedJob[] =>
   rawData
     .sort((a, b) => b.postedDate.localeCompare(a.postedDate))
     .map(j => ({

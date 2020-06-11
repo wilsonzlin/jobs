@@ -4,7 +4,7 @@ import {assertExists} from 'extlib/js/optional/assert';
 import moment from 'moment';
 import PQueue from 'p-queue';
 import {Job, Results} from '../model/goog';
-import {Cache, fetch, formatJobDate, getHtmlText} from './_common';
+import {Cache, fetch, formatJobDate, getHtmlText, ParsedJob} from './_common';
 
 export const fetchSubset = async (cache: Cache, page: number): Promise<Results> =>
   cache.computeIfAbsent<Results>(`results${page}.json`, async () =>
@@ -42,7 +42,7 @@ export const fetchAll = async (cache: Cache) =>
     return jobs;
   });
 
-export const parseAll = (rawData: Job[]) =>
+export const parseAll = (rawData: Job[]): ParsedJob[] =>
   rawData
     .sort((a, b) => b.publish_date.localeCompare(a.publish_date))
     .map(j => ({

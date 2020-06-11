@@ -6,7 +6,7 @@ import {mapOptional} from 'extlib/js/optional/map';
 import moment from 'moment';
 import PQueue from 'p-queue';
 import {Job, JobDdo, Results, ResultsDdo} from '../model/msft';
-import {Cache, fetch, getHtmlText, QueryParams} from './_common';
+import {Cache, fetch, formatJobDate, getHtmlText, QueryParams} from './_common';
 
 const DDO_BEFORE = 'phApp.ddo = ';
 const DDO_AFTER = '; phApp.sessionParams';
@@ -87,7 +87,7 @@ export const parseAll = (rawData: any[]) =>
       id: j.jobId,
       url: `https://careers.microsoft.com/us/en/job/${j.jobId}`,
       title: j.title,
-      date: moment.utc(j.postedDate).format('YYYY-M-D'),
+      date: formatJobDate(moment.utc(j.postedDate)),
       location: j.location,
       preview: getHtmlText(j.descriptionTeaser),
       // fullDescription is already extracted from HTML, so no need to call getHtmlText or decodeEntities.

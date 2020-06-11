@@ -1,7 +1,7 @@
 import {assertExists} from 'extlib/js/optional/assert';
 import moment from 'moment';
 import {Job} from '../model/amzn';
-import {Cache, fetch, getHtmlText} from './_common';
+import {Cache, fetch, formatJobDate, getHtmlText} from './_common';
 
 export const fetchSubset = async (cache: Cache, offset: number, limit: number): Promise<Job[]> =>
   cache.computeIfAbsent<Job[]>(`results${offset}l${limit}.json`, async () =>
@@ -32,7 +32,7 @@ export const parseAll = (rawData: Job[]) =>
       id: j.id,
       url: `https://amazon.jobs${j.job_path}`,
       title: j.title,
-      date: moment.utc(j.posted_date, 'MMMM D, YYYY').format('YYYY-M-D'),
+      date: formatJobDate(moment.utc(j.posted_date, 'MMMM D, YYYY')),
       location: j.location,
       preview: j.description_short,
       description: getHtmlText(j.description, j.basic_qualifications, j.preferred_qualifications),

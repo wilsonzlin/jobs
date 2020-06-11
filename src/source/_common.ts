@@ -2,6 +2,7 @@ import cheerio from 'cheerio';
 import {wait} from 'extlib/js/async/timeout';
 import {promises as fs} from 'fs';
 import mkdirp from 'mkdirp';
+import {Moment} from 'moment';
 import {join} from 'path';
 import request, {CoreOptions, RequiredUriUrl, Response} from 'request';
 
@@ -51,6 +52,8 @@ export const fetch = async ({
   console.warn(`Failed all ${maxRetries + 1} attempts to retrieve ${uri} with errors:\n- ${errors.join('\n- ')}`);
   return undefined;
 };
+
+export const formatJobDate = (time: Moment) => time.format('YYYY-MM-DD');
 
 export const getHtmlText = (...segments: (string | undefined)[]): string => segments
   .map(html => html && cheerio(`<div>${html.replace(/<br\s*\/*\s*>/g, '\n')}</div>`).text().trim())

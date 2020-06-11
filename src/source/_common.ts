@@ -52,8 +52,8 @@ export const fetch = async ({
   return undefined;
 };
 
-export const getHtmlText = (...segments: string[]): string => segments
-  .map(html => cheerio(`<div>${html.replace(/<br\s*\/*\s*>/g, '\n')}</div>`).text().trim())
+export const getHtmlText = (...segments: (string | undefined)[]): string => segments
+  .map(html => html && cheerio(`<div>${html.replace(/<br\s*\/*\s*>/g, '\n')}</div>`).text().trim())
   .join('\n\n')
   .trim();
 

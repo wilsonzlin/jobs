@@ -15,10 +15,18 @@ type Subset = {
 
 const RESULTS_PER_PAGE = 100;
 
+const HEADERS = {
+  // This is required to avoid server rejection as client error.
+  'Host': 'www.facebook.com',
+  // This is required to avoid out-of-date browser notice.
+  'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:76.0) Gecko/20100101 Firefox/76.0',
+};
+
 export const fetchDescription = async (cache: Cache, url: string): Promise<string> =>
-  (await cache.computeIfAbsent<string | undefined>(`job${url.replace(/\//g, '_')}.txt`, async () =>
+  (await cache.computeIfAbsent<string | undefined>(`job${url.replace(/\//g, '_')}.json`, async () =>
     mapDefined(await fetch({
       uri: url,
+      headers: HEADERS,
     }), html => {
       const $ = cheerio.load(html);
       return $('._94t2').text().trim();
@@ -29,6 +37,7 @@ export const fetchSubset = async (cache: Cache, page: number): Promise<Subset | 
   await cache.computeIfAbsent<Subset | undefined>(`results${page}.json`, async () =>
     mapDefined(await fetch({
       uri: `https://www.facebook.com/careers/jobs/`,
+      headers: HEADERS,
       qs: {page, results_per_page: RESULTS_PER_PAGE},
     }), html => {
       const $ = cheerio.load(html);
@@ -41,7 +50,7 @@ export const fetchSubset = async (cache: Cache, page: number): Promise<Subset | 
         10,
       );
       if (!Number.isSafeInteger(totalCount) || totalCount <= 0) {
-        throw new Error('Failed to detect total count');
+        throw new Error(`Failed to detect total count from title: ${resultsTitle}`);
       }
       const subset: Subset = {
         results: [],
@@ -50,7 +59,7 @@ export const fetchSubset = async (cache: Cache, page: number): Promise<Subset | 
       for (const $resultElem of $container.find('a[href^="/careers/jobs"]').get()) {
         const $result = $($resultElem);
         // This attribute definitely exists as it's how we selected this element.
-        const url = $result.attr('href')!;
+        const url = `https://www.facebook.com${$result.attr('href')!}`;
         const title = $result.find('._8sel').text();
         const location = $result.find('_8sen').text();
         subset.results.push({url, title, location});
@@ -62,7 +71,8 @@ export const fetchAll = async (cache: Cache) =>
   cache.computeIfAbsent('raw.json', async () => {
     const queue = new PQueue({concurrency: 8});
 
-    const first = await fetchSubset(cache, 0);
+    // Requesting page zero will cause 500.
+    const first = await fetchSubset(cache, 1);
     if (!first) {
       throw new Error(`[Facebook] Failed to fetch first page`);
     }
@@ -72,7 +82,7 @@ export const fetchAll = async (cache: Cache) =>
 
     const results = await Promise.all(blk(
       Math.ceil(totalCount / RESULTS_PER_PAGE),
-      page => queue.add(() => fetchSubset(cache, page)),
+      page => queue.add(() => fetchSubset(cache, page + 1)),
     ));
 
     const jobs = results

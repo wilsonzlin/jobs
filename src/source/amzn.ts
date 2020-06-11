@@ -29,7 +29,6 @@ export const fetchAll = async (cache: Cache) =>
 export const parseAll = (rawData: Job[]): ParsedJob[] =>
   rawData
     .map(j => ({
-      id: j.id,
       url: `https://amazon.jobs${j.job_path}`,
       title: j.title,
       date: formatJobDate(moment.utc(j.posted_date, 'MMMM D, YYYY')),

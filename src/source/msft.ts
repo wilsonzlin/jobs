@@ -84,7 +84,6 @@ export const parseAll = (rawData: any[]): ParsedJob[] =>
   rawData
     .sort((a, b) => b.postedDate.localeCompare(a.postedDate))
     .map(j => ({
-      id: j.jobId,
       url: `https://careers.microsoft.com/us/en/job/${j.jobId}`,
       title: j.title,
       date: formatJobDate(moment.utc(j.postedDate)),

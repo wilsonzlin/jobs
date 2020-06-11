@@ -87,11 +87,10 @@ export class Cache {
 }
 
 export type ParsedJob = {
-  id?: string;
-  url: string;
-  title: string;
   date?: string;
+  description?: string;
   location?: string;
   preview?: string;
-  description?: string;
+  title: string;
+  url: string;
 };

@@ -46,7 +46,6 @@ export const parseAll = (rawData: Job[]): ParsedJob[] =>
   rawData
     .sort((a, b) => b.publish_date.localeCompare(a.publish_date))
     .map(j => ({
-      id: j.job_id,
       url: `https://careers.google.com/jobs/results/${assertExists(/^jobs\/(\d+)$/.exec(j.job_id))[1]}`,
       title: j.job_title,
       date: formatJobDate(moment.utc(j.publish_date)),

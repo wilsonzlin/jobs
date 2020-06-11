@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "scripts": {
+    "demo": "ts-node run.ts"
+  },
+  "dependencies": {
+    "@types/mkdirp": "^1.0.1",
+    "@wzlin/jobs": "file:..",
+    "mkdirp": "^1.0.4",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
+  }
+}

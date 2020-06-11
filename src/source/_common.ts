@@ -37,20 +37,18 @@ export const fetch = async ({
   timeout?: number;
   uri: string;
 }): Promise<string | undefined> => {
+  const errors = [];
   for (let retry = 0; retry <= maxRetries; retry++) {
     await wait(Math.floor(Math.random() * jitter));
     try {
       const res = await req({headers, qs, timeout, uri});
       // Job could be missing (404), gone (410), etc.
-      if (res.statusCode >= 400 && res.statusCode < 500) {
-        break;
-      }
-      return res.body;
+      return res.statusCode >= 400 && res.statusCode < 500 ? undefined : res.body;
     } catch (error) {
-      console.warn(`Attempt ${retry} failed with error:`);
-      console.warn(error.message);
+      errors.push(error.message);
     }
   }
+  console.warn(`Failed all ${maxRetries + 1} attempts to retrieve ${uri} with errors:\n- ${errors.join('\n- ')}`);
   return undefined;
 };
 

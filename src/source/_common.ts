@@ -58,6 +58,7 @@ export const formatJobDate = (time: Moment) => time.format('YYYY-MM-DD');
 export const getHtmlText = (...segments: (string | undefined)[]): string => segments
   .map(html => html && cheerio(`<div>${html.replace(/<br\s*\/*\s*>/g, '\n')}</div>`).text().trim())
   .join('\n\n')
+  .replace(/[\r\n]{3,}/g, '\n\n')
   .trim();
 
 export class Cache {

@@ -1,5 +1,6 @@
 import {join} from 'path';
 import {Cache, ParsedJob} from './source/_common';
+import * as aapl from './source/aapl';
 import * as amzn from './source/amzn';
 import * as fb from './source/fb';
 import * as goog from './source/goog';
@@ -7,9 +8,10 @@ import * as msft from './source/msft';
 
 export {ParsedJob} from './source/_common';
 
-export type Company = 'Amazon' | 'Facebook' | 'Google' | 'Microsoft';
+export type Company = 'Apple' | 'Amazon' | 'Facebook' | 'Google' | 'Microsoft';
 
 export const COMPANIES = {
+  'Apple': aapl,
   'Amazon': amzn,
   'Facebook': fb,
   'Google': goog,

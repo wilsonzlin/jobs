@@ -7,6 +7,7 @@ const BUILD = path.join(__dirname, 'build');
 mkdirp.sync(BUILD);
 
 const COMPANIES = [
+  'Apple',
   'Amazon',
   'Facebook',
   'Google',

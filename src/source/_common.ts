@@ -4,7 +4,7 @@ import {promises as fs} from 'fs';
 import mkdirp from 'mkdirp';
 import {Moment} from 'moment';
 import {join} from 'path';
-import request, {CoreOptions, RequiredUriUrl, Response} from 'request';
+import request, {CookieJar, CoreOptions, RequiredUriUrl, Response} from 'request';
 
 export type QueryParams = { [name: string]: string | number };
 
@@ -24,16 +24,22 @@ const req = (params: CoreOptions & RequiredUriUrl): Promise<Response> =>
     }));
 
 export const fetch = async ({
+  body,
+  cookies,
   headers,
   jitter = 1000,
   maxRetries = 5,
+  method,
   qs,
   timeout = 30000,
   uri,
 }: {
+  body?: string;
+  cookies?: CookieJar;
   headers?: { [name: string]: string };
   jitter?: number;
   maxRetries?: number;
+  method?: string;
   qs?: QueryParams;
   timeout?: number;
   uri: string;
@@ -42,7 +48,15 @@ export const fetch = async ({
   for (let retry = 0; retry <= maxRetries; retry++) {
     await wait(Math.floor(Math.random() * jitter));
     try {
-      const res = await req({headers, qs, timeout, uri});
+      const res = await req({
+        body,
+        headers,
+        jar: cookies,
+        method,
+        qs,
+        timeout,
+        uri,
+      });
       // Job could be missing (404), gone (410), etc.
       return res.statusCode >= 400 && res.statusCode < 500 ? undefined : res.body;
     } catch (error) {

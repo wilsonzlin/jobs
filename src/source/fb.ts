@@ -113,7 +113,7 @@ export const fetchAll = async (cache: Cache) =>
 
     return jobs.map((j, i) => ({
       ...j,
-      fullDescription: fullDescriptions[i],
+      description: fullDescriptions[i],
     }));
   });
 

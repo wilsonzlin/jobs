@@ -6,6 +6,7 @@ import {Cache, fetch, ParsedJob} from './_common';
 
 type Subset = {
   results: {
+    id: string;
     url: string;
     title: string;
     location: string;
@@ -22,14 +23,14 @@ const HEADERS = {
   'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:76.0) Gecko/20100101 Firefox/76.0',
 };
 
-export const fetchDescription = async (cache: Cache, url: string): Promise<string> =>
-  (await cache.computeIfAbsent<string | undefined>(`job${url.replace(/\//g, '_')}.json`, async () =>
+export const fetchDescription = async (cache: Cache, id: string, url: string): Promise<string> =>
+  (await cache.computeIfAbsent<string | undefined>(`job${id}.json`, async () =>
     mapDefined(await fetch({
       uri: url,
       headers: HEADERS,
     }), html => {
       const $ = cheerio.load(html);
-      return $('._94t2').text().trim();
+      return $('body').text().trim();
     }),
   )) ?? '';
 
@@ -59,13 +60,29 @@ export const fetchSubset = async (cache: Cache, page: number): Promise<Subset | 
       for (const $resultElem of $container.find('a[href^="/careers/jobs"]').get()) {
         const $result = $($resultElem);
         // This attribute definitely exists as it's how we selected this element.
-        const url = `https://www.facebook.com${$result.attr('href')!}`;
+        const urlPath = $result.attr('href')!;
+        const id = /^\/careers\/jobs\/([0-9]+)\/$/.exec(urlPath)?.[1];
+        if (!id) {
+          console.warn(`Skipping unrecognised Facebook job URL path: ${urlPath}`);
+          continue;
+        }
+        const url = `https://www.facebook.com${urlPath}`;
         const title = $result.find('._8sel').text();
         const location = $result.find('_8sen').text();
-        subset.results.push({url, title, location});
+        subset.results.push({id, url, title, location});
       }
       return subset;
     }));
+
+const DESC_START = 'Back to Jobs';
+const DESC_END = "Facebook's mission is to give people the power to build community and bring the world closer together. Through our family of apps and services, we're building a different kind of company that connects billions of people around the world, gives them ways to share what matters most to them, and helps bring people closer together. Whether we're creating new products or helping a small business expand its reach, people at Facebook are builders at heart.";
+
+const distillDescriptions = (descs: string[]): string[] => {
+  return descs.map(d => d.slice(
+    d.indexOf(DESC_START) + DESC_START.length,
+    d.indexOf(DESC_END),
+  ).trim());
+};
 
 export const fetchAll = async (cache: Cache) =>
   cache.computeIfAbsent('raw.json', async () => {
@@ -88,9 +105,9 @@ export const fetchAll = async (cache: Cache) =>
     const jobs = results
       .flatMap(result => result?.results ?? []);
 
-    const fullDescriptions = await Promise.all(
-      jobs.map(j => queue.add(() => fetchDescription(cache, j.url))),
-    );
+    const fullDescriptions = distillDescriptions(await Promise.all(
+      jobs.map(j => queue.add(() => fetchDescription(cache, j.id, j.url))),
+    ));
 
     console.log('[Facebook] Jobs successfully fetched');
 

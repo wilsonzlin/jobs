@@ -12,6 +12,7 @@ const COMPANIES = [
   'Facebook',
   'Google',
   'Microsoft',
+  'Twitter',
 ];
 
 (async () => {

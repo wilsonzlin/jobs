@@ -5,10 +5,11 @@ import * as amzn from './source/amzn';
 import * as fb from './source/fb';
 import * as goog from './source/goog';
 import * as msft from './source/msft';
+import * as twtr from './source/twtr';
 
 export {ParsedJob} from './source/_common';
 
-export type Company = 'Apple' | 'Amazon' | 'Facebook' | 'Google' | 'Microsoft';
+export type Company = 'Apple' | 'Amazon' | 'Facebook' | 'Google' | 'Microsoft' | 'Twitter';
 
 export const COMPANIES = {
   'Apple': aapl,
@@ -16,6 +17,7 @@ export const COMPANIES = {
   'Facebook': fb,
   'Google': goog,
   'Microsoft': msft,
+  'Twitter': twtr,
 };
 
 export type Result<C extends Company> = {

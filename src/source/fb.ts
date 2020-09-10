@@ -1,5 +1,6 @@
 import cheerio from 'cheerio';
 import {blk} from 'extlib/js/array/gen';
+import {assertExists} from 'extlib/js/optional/assert';
 import {mapDefined} from 'extlib/js/optional/map';
 import PQueue from 'p-queue';
 import {Cache, fetch, ParsedJob} from './_common';
@@ -60,12 +61,13 @@ export const fetchSubset = async (cache: Cache, page: number): Promise<Subset | 
       for (const $resultElem of $container.find('a[href^="/careers/jobs"]').get()) {
         const $result = $($resultElem);
         // This attribute definitely exists as it's how we selected this element.
-        const urlPath = $result.attr('href')!;
-        const id = /^\/careers\/jobs\/([0-9]+)\/$/.exec(urlPath)?.[1];
-        if (!id) {
-          console.warn(`Skipping unrecognised Facebook job URL path: ${urlPath}`);
+        // Remove any query string from the end.
+        const urlPath = assertExists($result.attr('href')).replace(/\?[^?]*$/, '');
+        if (urlPath === '/careers/jobs/') {
+          // This is a link to more search results, not a specific job.
           continue;
         }
+        const id = assertExists(/^\/careers\/jobs\/([0-9]+)\/$/.exec(urlPath))[1];
         const url = `https://www.facebook.com${urlPath}`;
         const title = $result.find('._8sel').text();
         const location = $result.find('_8sen').text();
@@ -75,7 +77,7 @@ export const fetchSubset = async (cache: Cache, page: number): Promise<Subset | 
     }));
 
 const DESC_START = 'Back to Jobs';
-const DESC_END = "Facebook's mission is to give people the power to build community and bring the world closer together. Through our family of apps and services, we're building a different kind of company that connects billions of people around the world, gives them ways to share what matters most to them, and helps bring people closer together. Whether we're creating new products or helping a small business expand its reach, people at Facebook are builders at heart.";
+const DESC_END = 'Facebook\'s mission is to give people the power to build community and bring the world closer together. Through our family of apps and services, we\'re building a different kind of company that connects billions of people around the world, gives them ways to share what matters most to them, and helps bring people closer together. Whether we\'re creating new products or helping a small business expand its reach, people at Facebook are builders at heart.';
 
 const distillDescriptions = (descs: string[]): string[] => {
   return descs.map(d => d.slice(

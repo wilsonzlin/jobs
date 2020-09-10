@@ -622,389 +622,85 @@ export type JobDdo = {
 };
 
 export type Results = {
-  status: number;
-  hits: number;
-  totalHits: number;
-  data: {
-    jobs: {
-      country: string;
-      subCategory: string;
-      industry: null;
-      title: string;
-      multi_location: string[];
-      type: null;
-      orgFunction: null;
-      experience: string;
-      locale: string;
-      multi_location_array: {
-        location: string
-      }[];
-      jobSeqNo: string;
-      postedDate: string;
-      searchresults_display: null;
-      descriptionTeaser: string;
-      dateCreated: string;
-      state: string;
-      jd_display: null;
-      reqId: null;
-      badge: string;
-      jobId: string;
-      isMultiLocation: boolean;
-      jobVisibility: string[];
-      mostpopular: number;
-      location: string;
-      category: string;
-      locationLatlong: null
-    }[];
-    aggregations: {
-      field: string;
-      value: {
-        ['United States']: number;
-        India: number;
-        China: number;
-        ['United Kingdom']: number;
-        Japan: number;
-        Romania: number;
-        Israel: number;
-        Singapore: number;
-        Canada: number;
-        Ireland: number;
-        Taiwan: number;
-        Australia: number;
-        Korea: number;
-        ['Costa Rica']: number;
-        Portugal: number;
-        Netherlands: number;
-        Norway: number;
-        Estonia: number;
-        France: number;
-        Germany: number;
-        ['Czech Republic']: number;
-        Mexico: number;
-        Sweden: number;
-        Spain: number;
-        Denmark: number;
-        Switzerland: number;
-        ['Hong Kong SAR']: number;
-        Egypt: number;
-        Jordan: number;
-        Belgium: number;
-        Brazil: number;
-        ['United Arab Emirates']: number;
-        Chile: number;
-        Finland: number;
-        Italy: number;
-        Malaysia: number;
-        Poland: number;
-        Qatar: number;
-        Turkey: number;
-        Argentina: number;
-        ['Dominican Republic']: number;
-        ['New Zealand']: number;
-        Nigeria: number;
-        Philippines: number;
-        ['Puerto Rico']: number;
-        Russia: number;
-        Serbia: number;
-        ['South Africa']: number
-      }
-    }[];
-    locationData: {
-      place_id: string;
-      latitude: string;
-      longitude: string;
-      aboveMaxRadius: string;
-      placeVal: string
-    };
-    searchConfig: {
-      mostpopular: boolean
-    }
-  };
-  eid: string
-};
-
-export type ResultsDdo = {
-  siteConfig: {
-    status: string;
-    errorCode: null;
-    errorMsg: null;
+  refineSearch: {
+    status: number;
+    hits: number;
+    totalHits: number;
     data: {
-      urlMap: {
-        home: string;
-        category: string;
-        job: string;
-        jobcart: string;
-        ['search-results']: string;
-        ['glassdoor-reviews']: string;
-      };
-      categoryUrlMap: {
-        ['MICRUS_Legal---Corporate-Affairs']: string;
-        ['MICRUS_Supply-Chain---Operations-Management']: string;
-        ['MICRUS_Field-Business-Leadership']: string;
-        ['MICRUS_Business-Programs---Operations']: string;
-        MICRUS_Engineering: string;
-        ['MICRUS_Human-Resources']: string;
-        MICRUS_Marketing: string;
-        ['MICRUS_Technical-Sales']: string;
-        MICRUS_Research: string;
-        MICRUS_Evangelism: string;
-        MICRUS_Finance: string;
-        ['MICRUS_Hardware-Manufacturing-Engineering']: string;
-        MICRUS_Retail: string;
-        MICRUS_Services: string;
-        ['MICRUS_Business-Development---Strategy']: string;
-        MICRUS_Sales: string;
-        ['MICRUS_Hardware-Engineering']: string;
-        ['MICRUS_Product-Manufacturing-Operations']: string;
-        ['MICRUS_IT-Operations']: string;
-        ['MICRUS_Customer-Success']: string;
-        ['MICRUS_Data-Center']: string;
-        MICRUS_Unassigned: string;
-      };
-      siteSettings: {
-        skipLogout: boolean;
-        glassdoor: {};
-        glassdoorReviews: {};
-        twitter: {};
-        linkedIn: {
-          apiKey: string;
-        };
-        dropbox: {
-          apiKey: string;
-        };
-        referalUrl: string;
-        filePicker: {
-          onedrive: {
-            clientId: string;
-            devkey: string;
-          };
-          dropbox: {
-            clientId: string;
-            devkey: string;
-          };
-          googledrive: {
-            clientId: string;
-            devkey: string;
-          };
-        };
-        disableJobFilters: boolean;
-        referrerParams: boolean;
-        applyprofile: {
-          flowurl: string;
-          linkedin: string;
-          live_aad: string;
-          google: string;
-          live: string;
-          facebook: string;
-          fb: string;
-        };
-        dynamics: {
-          flowurl: string;
-          domain_hint: {
-            linkedin: string;
-            live_aad: string;
-            google: string;
-            live: string;
-            facebook: string;
-            fb: string;
-          };
-        };
-        oauth: {
-          google: {
-            loginUrl: string;
-            logoutUrl: string;
-            clientId: string;
-            scope: string;
-            redirectUri: string;
-            response_type: string;
-          };
-          microsoftCorporate: {
-            loginUrl: string;
-            logoutUrl: string;
-            clientId: string;
-            resource: string;
-            redirectUri: string;
-            scope: string;
-            response_type: string;
-          };
-          microsoft: {
-            loginUrl: string;
-            logoutUrl: string;
-            clientId: string;
-            redirectUri: string;
-            scope: string;
-            response_type: string;
-          };
-          facebook: {
-            loginUrl: string;
-            logoutUrl: string;
-            clientId: string;
-            redirectUri: string;
-            scope: string;
-            response_type: string;
-          };
-          linkedIn: {
-            loginUrl: string;
-            logoutUrl: string;
-            clientId: string;
-            redirectUri: string;
-            scope: string;
-            response_type: string;
-            awliIntgCtxCode: string;
-          };
-          linkedinCorporate: {
-            loginUrl: string;
-            logoutUrl: string;
-            clientId: string;
-            scope: string;
-            redirectUri: string;
-            response_type: string;
-            awliIntgCtxCode: string;
-          };
-        };
-        refineSearch: {
-          enabledFacets: string[];
-          facetDisplayNames: {
-            experience: string;
-            country: string;
-            state: string;
-            city: string;
-            category: string;
-            subCategory: string;
-            employmentType: string;
-            requisitionRoleType: string;
-            educationLevel: string;
-          };
-          facetPlaceholderNames: {
-            experience: string;
-            country: string;
-            state: string;
-            city: string;
-            category: string;
-            subCategory: string;
-            employmentType: string;
-            requisitionRoleType: string;
-            educationLevel: string;
-          };
-          defaultFacetsToOpen: string[];
-        };
-        bundleVersions: {
-          msgBundle: string;
-          validationRules: string;
-        };
-        eagerLoadSearch: boolean;
-      };
-      recommendedTrackingConfig: {
-        category: {
-          storageKey: string;
-          ddoKeysToStore: string[];
-          maxKeysToStore: string;
-        };
-        job: {
-          storageKey: string;
-          ddoKeysToStore: string[];
-          maxKeysToStore: string;
-        };
-        ['search-results']: {
-          storageKey: string;
-          ddoKeysToStore: string[];
-          maxKeysToStore: string;
+      jobs: {
+        country: string;
+        subCategory: string;
+        industry: null;
+        title: string;
+        multi_location: string[];
+        type: null;
+        orgFunction: null;
+        experience: string;
+        locale: string;
+        multi_location_array: {
+          location: string;
         }[];
-      };
-      trackingConfig: {
-        ddoDataPath: {
-          jobDetail: string;
-        };
-        job_category_click: {
-          trait14: string;
-        };
-        similar_job_click: {
-          trait12: string;
-          related: {
-            ddo: {
-              name: string;
-              data: {
-                trait5: string;
-                trait14: string;
-              };
-            }[];
-          };
-        };
-        linkedin_recommended_job_click: {
-          trait5: string;
-          trait14: string;
-        };
-        recommended_job_click: {
-          trait5: string;
-          trait14: string;
-        };
-        near_job_click: {
-          trait5: string;
-          trait14: string;
-        };
-        favorite_job_click: {
-          trait5: string;
-          trait14: string;
-        };
-        job_favorite_delete_click: {
-          trait5: string;
-          trait14: string;
-        };
-        type_ahead_search: {};
-        similar_job_see_more_click: {};
-        linkedin_login_click: {};
-        linkedin_logout_click: {};
-        view_all_glassdoor_reviews_click: {};
-        homepage_category_click: {
-          trait14: string;
-        };
-        category_click: {
-          trait14: string;
-        };
-        job_category_search_click: {
-          trait14: string;
-        };
-        job_click: {
-          trait5: string;
-          trait14: string;
-        };
-        previous_job_click: {
-          trait5: string;
-          trait14: string;
-        };
-        next_job_click: {
-          trait5: string;
-          trait14: string;
-        };
-        linkedin_recommended_category_click: {
-          trait14: string;
-        };
-        recently_viewed_job_click: {
-          trait5: string;
-          trait14: string;
-        };
-        back_to_search_results_click: {};
-      };
-      pageNameMap: {
-        ['404']: string;
-        home: string;
+        jobSeqNo: string;
+        postedDate: string;
+        searchresults_display: null;
+        descriptionTeaser: string;
+        dateCreated: string;
+        state: string;
+        targetLevel: string;
+        jd_display: null;
+        reqId: null;
+        badge: string;
+        jobId: string;
+        isMultiLocation: boolean;
+        jobVisibility: string[];
+        mostpopular: number;
+        location: string;
         category: string;
-        featuredOpportunities: string;
-        businessUnit: string;
-        job: string;
-        ['search-results']: string;
-        apply: string;
-        glassdoorReviews: string;
-        jobcart: string;
-      };
-      captchaConfig: {
-        useCaptcha: boolean;
-        apiUrl: string;
-        siteKey: string;
+        locationLatlong: null;
+      }[];
+      aggregations: {
+        field: string;
+        value: {
+          ['United States']: number;
+          India: number;
+          China: number;
+          ['Czech Republic']: number;
+          Canada: number;
+          Romania: number;
+          Israel: number;
+          Australia: number;
+          Finland: number;
+          Japan: number;
+          Estonia: number;
+          Ireland: number;
+          ['Costa Rica']: number;
+          ['United Kingdom']: number;
+          Portugal: number;
+          Mexico: number;
+          Spain: number;
+          Brazil: number;
+          Egypt: number;
+          ['Hong Kong SAR']: number;
+          Norway: number;
+          Singapore: number;
+          Taiwan: number;
+          Argentina: number;
+          Chile: number;
+          Colombia: number;
+          Denmark: number;
+          France: number;
+          Jordan: number;
+          Korea: number;
+          Netherlands: number;
+          ['New Zealand']: number;
+          Serbia: number;
+          Switzerland: number;
+        };
+      }[];
+      searchConfig: {
+        mostpopular: boolean;
       };
     };
-    reqData: null;
+    eid: string;
   };
-  flashParams: {};
-  eagerLoadRefineSearch: Results;
-};
+}

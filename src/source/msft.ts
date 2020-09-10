@@ -5,7 +5,8 @@ import {assertExists} from 'extlib/js/optional/assert';
 import {mapOptional} from 'extlib/js/optional/map';
 import moment from 'moment';
 import PQueue from 'p-queue';
-import {Job, JobDdo, Results, ResultsDdo} from '../model/msft';
+import request, {CookieJar} from 'request';
+import {Job, JobDdo, Results} from '../model/msft';
 import {Cache, fetch, formatJobDate, getHtmlText, ParsedJob, QueryParams} from './_common';
 
 const DDO_BEFORE = 'phApp.ddo = ';
@@ -13,15 +14,23 @@ const DDO_AFTER = '; phApp.sessionParams';
 
 // Use `null` for missing data as `undefined` cannot be serialised into JSON.
 
+type Session = {
+  cookies: CookieJar;
+  csrf: string;
+};
+
+export const startSession = async (): Promise<Session> => {
+  const cookies = request.jar();
+  const body = await fetch({
+    uri: 'https://careers.microsoft.com/professionals/us/en/search-results',
+    cookies,
+  });
+  const csrf = assertExists(/"csrfToken":"([a-fA-F0-9]+)"/.exec(assertExists(body)))[1];
+  return {cookies, csrf};
+};
+
 export const fetchDdo = async <R extends {}> (uri: string, qs?: QueryParams): Promise<R | null> =>
-  mapOptional(await fetch({
-    uri,
-    qs,
-    headers: {
-      // User agent is required, as otherwise the page responds with an error.
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
-    },
-  }), body => {
+  mapOptional(await fetch({uri, qs}), body => {
     const $ = cheerio.load(body);
     for (const $script of $('script').get()) {
       const js = $($script).contents().text();
@@ -32,6 +41,18 @@ export const fetchDdo = async <R extends {}> (uri: string, qs?: QueryParams): Pr
     }
   }) ?? null;
 
+export const fetchWidget = async <R extends {}> (body: object, session: Session): Promise<R | null> =>
+  mapOptional(await fetch({
+    method: 'POST',
+    uri: 'https://careers.microsoft.com/professionals/widgets',
+    cookies: session.cookies,
+    body: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json',
+      'x-csrf-token': session.csrf,
+    },
+  }), res => JSON.parse(res)) ?? null;
+
 export const fetchDescription = async (cache: Cache, id: string | number): Promise<string> =>
   mapOptional(
     await cache.computeIfAbsent<Job | null>(`job${id}.json`, async () =>
@@ -40,32 +61,37 @@ export const fetchDescription = async (cache: Cache, id: string | number): Promi
     job => getHtmlText(job.description, job.jobSummary, job.jobResponsibilities, job.jobQualifications),
   ) ?? '';
 
-export const fetchSubset = async (cache: Cache, from: number): Promise<Results> =>
+export const fetchSubset = async (cache: Cache, from: number, session: Session): Promise<Results> =>
   await cache.computeIfAbsent<Results>(`results${from}.json`, async () =>
-    assertExists(await fetchDdo<ResultsDdo>(`https://careers.microsoft.com/us/en/search-results`, {
+    assertExists(await fetchWidget<Results>({
+      ddoKey: 'refineSearch',
       from,
-      s: 1, // This is required, otherwise `from` is ignored.
-      rt: 'professional', // Professional jobs.
-    })).eagerLoadRefineSearch,
+      jobs: true,
+      all_fields: ['country', 'state', 'city', 'category', 'subCategory', 'employmentType', 'requisitionRoleType'],
+      size: 10000,
+      selected_fields: {},
+    }, session)),
   );
 
 export const fetchAll = async (cache: Cache) =>
   cache.computeIfAbsent('raw.json', async () => {
     const queue = new PQueue({concurrency: 8});
 
-    const first = await fetchSubset(cache, 0);
-    const pagination = first.hits;
-    const total = first.totalHits;
+    const session = await startSession();
+
+    const first = await fetchSubset(cache, 0, session);
+    const pagination = first.refineSearch.hits;
+    const total = first.refineSearch.totalHits;
 
     console.info(`[Microsoft] Need to retrieve ${total} jobs in chunks of ${pagination}`);
 
     const results = await Promise.all(blk(
       Math.ceil(total / pagination),
-      page => queue.add(() => fetchSubset(cache, page * pagination)),
+      page => queue.add(() => fetchSubset(cache, page * pagination, session)),
     ));
 
     const jobs = results
-      .flatMap(result => result.data.jobs)
+      .flatMap(result => result.refineSearch.data.jobs)
       .filter(createDistinctFilter(j => j.jobId));
 
     const fullDescriptions = await Promise.all(

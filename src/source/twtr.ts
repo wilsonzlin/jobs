@@ -8,7 +8,7 @@ import {Cache, fetch, formatJobDate, ParsedJob} from './_common';
 export const fetchSubset = async (cache: Cache, offset: number): Promise<Results> =>
   cache.computeIfAbsent<Results>(`results${offset}.json`, async () =>
     JSON.parse(assertExists(await fetch({
-      uri: 'https://careers.twitter.com/content/careers-twitter/en/jobs.careers.search.json',
+      uri: 'https://careers.twitter.com/content/careers-twitter/en/roles.careers.search.json',
       qs: {
         offset,
         limit: 100,

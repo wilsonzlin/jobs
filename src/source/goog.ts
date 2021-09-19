@@ -9,7 +9,7 @@ import {Cache, fetch, formatJobDate, getHtmlText, ParsedJob} from './_common';
 export const fetchSubset = async (cache: Cache, page: number): Promise<Results> =>
   cache.computeIfAbsent<Results>(`results${page}.json`, async () =>
     JSON.parse(assertExists(await fetch({
-      uri: 'https://careers.google.com/api/v2/jobs/search/',
+      uri: 'https://careers.google.com/api/v3/search/',
       qs: {
         page,
       },

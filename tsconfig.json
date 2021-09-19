@@ -23,6 +23,7 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "suppressImplicitAnyIndexErrors": true,
-    "target": "es2018"
+    "target": "es2018",
+    "useUnknownInCatchVariables": false
   }
 }

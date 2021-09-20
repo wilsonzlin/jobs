@@ -1,10 +1,15 @@
-import cheerio from 'cheerio';
-import {wait} from 'extlib/js/async/timeout';
-import {promises as fs} from 'fs';
-import mkdirp from 'mkdirp';
-import {Moment} from 'moment';
-import {join} from 'path';
-import request, {CookieJar, CoreOptions, RequiredUriUrl, Response} from 'request';
+import cheerio from "cheerio";
+import { wait } from "extlib/js/async/timeout";
+import { promises as fs } from "fs";
+import mkdirp from "mkdirp";
+import { Moment } from "moment";
+import { join } from "path";
+import request, {
+  CookieJar,
+  CoreOptions,
+  RequiredUriUrl,
+  Response,
+} from "request";
 
 export type QueryParams = { [name: string]: string | number };
 
@@ -14,14 +19,22 @@ const req = (params: CoreOptions & RequiredUriUrl): Promise<Response> =>
       if (error) {
         reject(error);
       } else if (response.statusCode >= 500) {
-        reject(Object.assign(new Error(`Server error (status ${response.statusCode}) while fetching ${response.request.href}`), {
-          statusCode: response.statusCode,
-          response,
-        }));
+        reject(
+          Object.assign(
+            new Error(
+              `Server error (status ${response.statusCode}) while fetching ${response.request.href}`
+            ),
+            {
+              statusCode: response.statusCode,
+              response,
+            }
+          )
+        );
       } else {
         resolve(response);
       }
-    }));
+    })
+  );
 
 export const fetch = async ({
   body,
@@ -58,36 +71,49 @@ export const fetch = async ({
         uri,
       });
       // Job could be missing (404), gone (410), etc.
-      return res.statusCode >= 400 && res.statusCode < 500 ? undefined : res.body;
+      return res.statusCode >= 400 && res.statusCode < 500
+        ? undefined
+        : res.body;
     } catch (error) {
       errors.push(error.message);
     }
   }
-  console.warn(`Failed all ${maxRetries + 1} attempts to retrieve ${uri} with errors:\n- ${errors.join('\n- ')}`);
+  console.warn(
+    `Failed all ${
+      maxRetries + 1
+    } attempts to retrieve ${uri} with errors:\n- ${errors.join("\n- ")}`
+  );
   return undefined;
 };
 
-export const formatJobDate = (time: Moment) => time.format('YYYY-MM-DD');
+export const formatJobDate = (time: Moment) => time.format("YYYY-MM-DD");
 
-export const getHtmlText = (...segments: (string | undefined)[]): string => segments
-  .map(html => html && cheerio(`<div>${html.replace(/<br\s*\/*\s*>/g, '\n')}</div>`).text().trim())
-  .join('\n\n')
-  .replace(/[\r\n]{3,}/g, '\n\n')
-  .trim();
+export const getHtmlText = (...segments: (string | undefined)[]): string =>
+  segments
+    .map(
+      (html) =>
+        html &&
+        cheerio(`<div>${html.replace(/<br\s*\/*\s*>/g, "\n")}</div>`)
+          .text()
+          .trim()
+    )
+    .join("\n\n")
+    .replace(/[\r\n]{3,}/g, "\n\n")
+    .trim();
 
 export class Cache {
-  constructor (
-    private readonly dir: string,
-  ) {
-  }
+  constructor(private readonly dir: string) {}
 
-  async computeIfAbsent<V> (file: string, computeFn: () => Promise<V>): Promise<V> {
+  async computeIfAbsent<V>(
+    file: string,
+    computeFn: () => Promise<V>
+  ): Promise<V> {
     const path = join(this.dir, file);
     await mkdirp(this.dir);
     try {
-      return JSON.parse(await fs.readFile(path, 'utf8'));
+      return JSON.parse(await fs.readFile(path, "utf8"));
     } catch (e) {
-      if (e.code != 'ENOENT') {
+      if (e.code != "ENOENT") {
         console.warn(`Failed to load data from cache: ${e.message}`);
       }
       const value = await computeFn();

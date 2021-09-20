@@ -8,25 +8,25 @@ export type Job = {
   msrReqType: boolean;
   structureData: {
     hiringOrganization: {
-      ['@type']: string;
-      name: string
+      ["@type"]: string;
+      name: string;
     };
     jobLocation: {
       address: {
         addressCountry: string;
-        ['@type']: string;
+        ["@type"]: string;
         addressLocality: string;
-        addressRegion: string
+        addressRegion: string;
       };
-      ['@type']: string
+      ["@type"]: string;
     };
     employmentType: string;
-    ['@type']: string;
+    ["@type"]: string;
     description: string;
     datePosted: string;
     title: string;
-    ['@context']: string;
-    occupationalCategory: string
+    ["@context"]: string;
+    occupationalCategory: string;
   };
   targetStandardTitle: string;
   descriptionTeaser: string;
@@ -34,7 +34,7 @@ export type Job = {
   primaryWorkLocation: {
     country: string;
     city: string;
-    state: string
+    state: string;
   };
   careerStage: string;
   state: string;
@@ -60,7 +60,7 @@ export type Job = {
     cityCountry: string;
     cityStateCountry: string;
     stateCountry: string;
-    longitude: string
+    longitude: string;
   }[];
   jobQualifications: string;
   postedDate: string;
@@ -70,7 +70,7 @@ export type Job = {
   onBoardingContact: string;
   benefits_and_perks: {
     displayName: string;
-    id: number
+    id: number;
   }[];
   dateCreated: string;
   educationLevel: string;
@@ -94,7 +94,7 @@ export type Job = {
   category: string;
   operation: string;
   requisitionTravelPercentage: string;
-  requisitionRoleType: string
+  requisitionRoleType: string;
 };
 
 export type JobDdo = {
@@ -108,31 +108,31 @@ export type JobDdo = {
         category: string;
         job: string;
         jobcart: string;
-        ['search-results']: string;
-        ['glassdoor-reviews']: string;
+        ["search-results"]: string;
+        ["glassdoor-reviews"]: string;
       };
       categoryUrlMap: {
-        ['MICRUS_Legal---Corporate-Affairs']: string;
-        ['MICRUS_Supply-Chain---Operations-Management']: string;
-        ['MICRUS_Field-Business-Leadership']: string;
-        ['MICRUS_Business-Programs---Operations']: string;
+        ["MICRUS_Legal---Corporate-Affairs"]: string;
+        ["MICRUS_Supply-Chain---Operations-Management"]: string;
+        ["MICRUS_Field-Business-Leadership"]: string;
+        ["MICRUS_Business-Programs---Operations"]: string;
         MICRUS_Engineering: string;
-        ['MICRUS_Human-Resources']: string;
+        ["MICRUS_Human-Resources"]: string;
         MICRUS_Marketing: string;
-        ['MICRUS_Technical-Sales']: string;
+        ["MICRUS_Technical-Sales"]: string;
         MICRUS_Research: string;
         MICRUS_Evangelism: string;
         MICRUS_Finance: string;
-        ['MICRUS_Hardware-Manufacturing-Engineering']: string;
+        ["MICRUS_Hardware-Manufacturing-Engineering"]: string;
         MICRUS_Retail: string;
         MICRUS_Services: string;
-        ['MICRUS_Business-Development---Strategy']: string;
+        ["MICRUS_Business-Development---Strategy"]: string;
         MICRUS_Sales: string;
-        ['MICRUS_Hardware-Engineering']: string;
-        ['MICRUS_Product-Manufacturing-Operations']: string;
-        ['MICRUS_IT-Operations']: string;
-        ['MICRUS_Customer-Success']: string;
-        ['MICRUS_Data-Center']: string;
+        ["MICRUS_Hardware-Engineering"]: string;
+        ["MICRUS_Product-Manufacturing-Operations"]: string;
+        ["MICRUS_IT-Operations"]: string;
+        ["MICRUS_Customer-Success"]: string;
+        ["MICRUS_Data-Center"]: string;
         MICRUS_Unassigned: string;
       };
       siteSettings: {
@@ -277,7 +277,7 @@ export type JobDdo = {
           ddoKeysToStore: string[];
           maxKeysToStore: string;
         };
-        ['search-results']: {
+        ["search-results"]: {
           storageKey: string;
           ddoKeysToStore: string[];
           maxKeysToStore: string;
@@ -359,13 +359,13 @@ export type JobDdo = {
         back_to_search_results_click: {};
       };
       pageNameMap: {
-        ['404']: string;
+        ["404"]: string;
         home: string;
         category: string;
         featuredOpportunities: string;
         businessUnit: string;
         job: string;
-        ['search-results']: string;
+        ["search-results"]: string;
         apply: string;
         glassdoorReviews: string;
         jobcart: string;
@@ -383,7 +383,7 @@ export type JobDdo = {
     errorCode: null;
     errorMsg: null;
     data: {
-      ['MICRUS_Legal---Corporate-Affairs']: {
+      ["MICRUS_Legal---Corporate-Affairs"]: {
         internalId: string;
         images: {
           bannerImage: string;
@@ -394,7 +394,7 @@ export type JobDdo = {
         url: string;
         content: string;
       };
-      ['MICRUS_Supply-Chain---Operations-Management']: {
+      ["MICRUS_Supply-Chain---Operations-Management"]: {
         internalId: string;
         images: {
           bannerImage: string;
@@ -405,7 +405,7 @@ export type JobDdo = {
         url: string;
         content: string;
       };
-      ['MICRUS_Field-Business-Leadership']: {
+      ["MICRUS_Field-Business-Leadership"]: {
         internalId: string;
         images: {
           bannerImage: string;
@@ -416,7 +416,7 @@ export type JobDdo = {
         url: string;
         content: string;
       };
-      ['MICRUS_Business-Programs---Operations']: {
+      ["MICRUS_Business-Programs---Operations"]: {
         internalId: string;
         images: {
           bannerImage: string;
@@ -438,7 +438,7 @@ export type JobDdo = {
         url: string;
         content: string;
       };
-      ['MICRUS_Data-Center']: {
+      ["MICRUS_Data-Center"]: {
         internalId: string;
         images: {
           bannerImage: string;
@@ -449,7 +449,7 @@ export type JobDdo = {
         url: string;
         content: string;
       };
-      ['MICRUS_Customer-Success']: {
+      ["MICRUS_Customer-Success"]: {
         internalId: string;
         images: {
           bannerImage: string;
@@ -460,7 +460,7 @@ export type JobDdo = {
         url: string;
         content: string;
       };
-      ['MICRUS_Human-Resources']: {
+      ["MICRUS_Human-Resources"]: {
         internalId: string;
         images: {
           bannerImage: string;
@@ -482,7 +482,7 @@ export type JobDdo = {
         url: string;
         content: string;
       };
-      ['MICRUS_Technical-Sales']: {
+      ["MICRUS_Technical-Sales"]: {
         internalId: string;
         images: {
           bannerImage: string;
@@ -515,7 +515,7 @@ export type JobDdo = {
         url: string;
         content: string;
       };
-      ['MICRUS_Hardware-Manufacturing-Engineering']: {
+      ["MICRUS_Hardware-Manufacturing-Engineering"]: {
         internalId: string;
         images: {
           bannerImage: string;
@@ -559,7 +559,7 @@ export type JobDdo = {
         url: string;
         content: string;
       };
-      ['MICRUS_Business-Development---Strategy']: {
+      ["MICRUS_Business-Development---Strategy"]: {
         internalId: string;
         images: {
           bannerImage: string;
@@ -581,7 +581,7 @@ export type JobDdo = {
         url: string;
         content: string;
       };
-      ['MICRUS_Hardware-Engineering']: {
+      ["MICRUS_Hardware-Engineering"]: {
         internalId: string;
         images: {
           bannerImage: string;
@@ -592,7 +592,7 @@ export type JobDdo = {
         url: string;
         content: string;
       };
-      ['MICRUS_IT-Operations']: {
+      ["MICRUS_IT-Operations"]: {
         internalId: string;
         images: {
           bannerImage: string;
@@ -661,10 +661,10 @@ export type Results = {
       aggregations: {
         field: string;
         value: {
-          ['United States']: number;
+          ["United States"]: number;
           India: number;
           China: number;
-          ['Czech Republic']: number;
+          ["Czech Republic"]: number;
           Canada: number;
           Romania: number;
           Israel: number;
@@ -673,14 +673,14 @@ export type Results = {
           Japan: number;
           Estonia: number;
           Ireland: number;
-          ['Costa Rica']: number;
-          ['United Kingdom']: number;
+          ["Costa Rica"]: number;
+          ["United Kingdom"]: number;
           Portugal: number;
           Mexico: number;
           Spain: number;
           Brazil: number;
           Egypt: number;
-          ['Hong Kong SAR']: number;
+          ["Hong Kong SAR"]: number;
           Norway: number;
           Singapore: number;
           Taiwan: number;
@@ -692,7 +692,7 @@ export type Results = {
           Jordan: number;
           Korea: number;
           Netherlands: number;
-          ['New Zealand']: number;
+          ["New Zealand"]: number;
           Serbia: number;
           Switzerland: number;
         };
@@ -703,4 +703,4 @@ export type Results = {
     };
     eid: string;
   };
-}
+};

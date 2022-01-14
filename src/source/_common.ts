@@ -73,8 +73,9 @@ export const fetch = async ({
       // Job could be missing (404), gone (410), etc.
       if (res.statusCode >= 400 && res.statusCode < 500) {
         console.warn(
-          `${method} ${uri} responded with status ${res.statusCode}, will return undefined`
+          `${method ?? "GET"} ${uri} responded with status ${res.statusCode}, will return undefined`
         );
+        return undefined;
       }
       return res.body;
     } catch (error) {
